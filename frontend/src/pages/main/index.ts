@@ -1,0 +1,8 @@
+export {default as Dashboard} from "./dashboard"
+export {default as Deposit} from "./deposit"
+export {default as Withdraw} from "./withdraw"
+export {default as Payment} from "./payment"
+export {default as Profile} from "./profile"
+export {default as NewTrade} from "./new-trade"
+export {default as Trades} from "./trades"
+export {default as Transaction} from "./transaction"
