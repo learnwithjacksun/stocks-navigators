@@ -68,9 +68,7 @@ export default function AvatarUpload({
 
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-medium text-muted">
-        Profile Picture
-      </label>
+    
       
       <input
         ref={fileInputRef}
@@ -119,16 +117,17 @@ export default function AvatarUpload({
                 <span className="text-sm font-medium text-gray-900 dark:text-white">
                   {selectedImage ? 'New Image Selected' : 'Current Profile Picture'}
                 </span>
-                <button
+               {selectedImage && <button
                   type="button"
                   onClick={handleRemove}
                   className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                   disabled={disabled}
                 >
                   <X className="w-4 h-4" />
-                </button>
+                </button>}
               </div>
               <button
+                type="button"
                 onClick={handleClick}
                 disabled={disabled}
                 className="w-full px-4 py-2 text-sm border border-line rounded-lg text-gray-700 dark:text-gray-300 hover:bg-foreground transition-colors"

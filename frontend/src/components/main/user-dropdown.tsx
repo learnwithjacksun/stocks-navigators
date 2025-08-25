@@ -38,7 +38,7 @@ export default function UserDropdown({ isOpen, onClose, userName, userAvatar }: 
     {
       label: "Settings",
       icon: Settings,
-      href: "/settings",
+      href: "/profile",
     },
   ];
 

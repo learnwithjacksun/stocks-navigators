@@ -16,7 +16,7 @@ export default function ForgotPassword() {
     }
   
   return (
-    <div className="bg-foreground min-h-[100dvh]">
+    <div className="bg-foreground dark:bg-background min-h-[100dvh]">
       <div className="py-10 w-[90%] mx-auto md:w-[400px]">
         <div>
           <img
@@ -25,7 +25,7 @@ export default function ForgotPassword() {
             className="w-full h-full object-contain"
           />
         </div>
-        <div className="bg-background p-6">
+        <div className="bg-background dark:bg-secondary p-6">
           <h1 className="text-xl text-center font-bold">
             Forgot Password
           </h1>

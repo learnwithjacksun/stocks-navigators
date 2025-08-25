@@ -55,3 +55,35 @@ interface ITrade {
   profitPercentage: number;
   canClaim: boolean;
 }
+
+interface ProfileData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  country: string;
+  city: string;
+  address: string;
+  avatar?: string;
+}
+
+interface SecuritySettings {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+  twoFactorEnabled: boolean;
+  emailNotifications: boolean;
+  smsNotifications: boolean;
+}
+
+interface PreferencesSettings {
+  emailNotifications: boolean;
+  smsNotifications: boolean;
+}
+
+interface AccountInfo {
+  accountId: string;
+  memberSince: string;
+  accountStatus: string;
+}
+

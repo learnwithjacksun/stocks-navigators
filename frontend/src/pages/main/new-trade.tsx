@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MainLayout } from "@/layouts";
 import { AmountInput, ButtonWithLoader, SelectWithoutIcon } from "@/components/ui";
@@ -11,12 +11,23 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+
 interface TradeData {
   asset: TradingAsset | null;
   amount: string;
   tradeId: string;
   timestamp: Date;
 }
+
+ const scrollToTop = (id = "scroll-container") => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollTo({ top: 0, behavior: "smooth" });
+  } else {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+};
+
 
 export default function NewTrade() {
   const navigate = useNavigate();
@@ -28,7 +39,14 @@ export default function NewTrade() {
 
   const selectedAsset = tradingAssets.find(asset => asset.id === selectedAssetId);
 
+  useEffect(() => {
+    setTimeout(() => scrollToTop(), 0);
+  }, [step]);
+  
+
   const handleReview = () => {
+    scrollToTop();
+
     if (!selectedAsset) {
       toast.error("Please select a trading asset");
       return;
@@ -57,6 +75,7 @@ export default function NewTrade() {
     if (!tradeData) return;
 
     setIsLoading(true);
+    scrollToTop();
     
     // Simulate API call
     setTimeout(() => {
@@ -97,7 +116,7 @@ export default function NewTrade() {
 
   return (
     <MainLayout>
-      <div className="max-w-4xl mx-auto space-y-6 mt-10">
+      <div id="scroll-container" className="max-w-4xl mx-auto space-y-6 mt-10">
         {/* Header */}
         <div className=" mb-6">
 
@@ -151,7 +170,7 @@ export default function NewTrade() {
 
         {/* Form Step */}
         {step === 'form' && (
-          <div className="bg-background dark:bg-secondary rounded-lg border border-line p-6">
+          <div className="bg-background dark:bg-secondary rounded-lg border border-line md:p-6 p-4">
             <div className="space-y-6">
               {/* Asset Selection */}
               <div>
@@ -195,13 +214,11 @@ export default function NewTrade() {
 
               {/* Amount Input */}
               <div>
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                  Investment Amount
-                </h3>
+               
                 <AmountInput
                   value={amount}
                   onChange={setAmount}
-                  label="Trade Amount"
+                  label="Investment Amount"
                   placeholder="0.00"
                   error={
                     selectedAsset && amount 
@@ -230,7 +247,7 @@ export default function NewTrade() {
                     <h4 className="text-sm font-medium text-blue-900 dark:text-blue-100">
                       Important Information
                     </h4>
-                    <ul className="text-sm text-blue-800 dark:text-blue-200 mt-1 space-y-1">
+                    <ul className="text-xs text-blue-800 dark:text-blue-200 mt-1 space-y-1">
                       <li>• Trades are executed at market prices</li>
                       <li>• You can monitor your trade performance in real-time</li>
                       <li>• All trades are subject to market volatility</li>
@@ -257,7 +274,7 @@ export default function NewTrade() {
 
         {/* Review Step */}
         {step === 'review' && tradeData && (
-          <div className="bg-background dark:bg-secondary rounded-lg border border-line p-6">
+          <div className="bg-background dark:bg-secondary rounded-lg border border-line md:p-6 p-4">
             <div className="space-y-6">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="p-2 bg-blue-500/10 rounded-lg">
@@ -349,7 +366,7 @@ export default function NewTrade() {
 
         {/* Success Step */}
         {step === 'success' && tradeData && (
-          <div className="bg-background dark:bg-secondary rounded-lg border border-line p-6">
+          <div className="bg-background dark:bg-secondary rounded-lg border border-line md:p-6 p-4">
             <div className="text-center space-y-6">
               <div className="flex justify-center">
                 <div className="w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
@@ -367,7 +384,7 @@ export default function NewTrade() {
               </div>
 
               {/* Trade Details */}
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 max-w-md mx-auto">
+              <div className="bg-foreground rounded-lg p-6 max-w-md mx-auto">
                 <h4 className="font-medium text-gray-900 dark:text-white mb-4">Trade Details</h4>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">

@@ -79,14 +79,13 @@ export default function Trades() {
             <div className="flex flex-wrap gap-4">
               {/* Status Filter */}
               <div className="flex items-center gap-2">
-                <div className="text-xs text-muted">Status:</div>
                 <SelectWithoutIcon
-                className="bg-secondary"
-                defaultValue="Status"
+                className="bg-secondary px-6"
+                defaultValue="Filter Status"
                   value={filter}
                   onChange={(e) => setFilter(e.target.value as 'all' | 'running' | 'completed' | 'paused')}
                   options={[
-                    { label: 'All', value: 'all' },
+                    { label: 'All Status', value: 'all' },
                     { label: 'Running', value: 'running' },
                     { label: 'Completed', value: 'completed' },
                     { label: 'Paused', value: 'paused' }
@@ -97,14 +96,13 @@ export default function Trades() {
 
               {/* Profit Filter */}
               <div className="flex items-center gap-2">
-                <div className="text-xs text-muted">Performance:</div>
                 <SelectWithoutIcon
-                className="bg-secondary"
-                  defaultValue="Performance"
+                className="bg-secondary px-6"
+                  defaultValue="Filter Performance"
                   value={profitFilter}
                   onChange={(e) => setProfitFilter(e.target.value as 'all' | 'profit' | 'loss')}
                   options={[
-                    { label: 'All', value: 'all' },
+                    { label: 'All Performance', value: 'all' },
                     { label: 'Profitable', value: 'profit' },
                     { label: 'Loss', value: 'loss' }
                   ]}

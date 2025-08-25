@@ -53,7 +53,7 @@ export default function Dashboard() {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Link
-              to="/trade"
+              to="/trades"
               className="flex items-center justify-center space-x-2 p-4 border border-line rounded-lg bg-foreground transition-colors"
             >
               <TrendingUp className="w-5 h-5 text-red-600" />

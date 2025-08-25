@@ -9,7 +9,6 @@ import {
   Info,
   Copy,
   Check,
-  Camera,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -75,7 +74,13 @@ export default function Payment() {
     // Simulate API call to confirm payment
     setTimeout(() => {
       setIsProcessing(false);
-      toast.success("Payment confirmed! Your deposit will be processed shortly.");
+      toast.success("Payment confirmed!", {
+        description: "Your deposit will be processed shortly.",
+        action: {
+          label: "View Dashboard",
+          onClick: () => navigate('/dashboard')
+        }
+      });
       // You can redirect to dashboard or show success page
       setTimeout(() => {
         navigate('/dashboard');
@@ -143,7 +148,7 @@ export default function Payment() {
         </div>
 
         {/* Payment Instructions */}
-        <div className="bg-background dark:bg-secondary rounded-lg border border-line p-6">
+        <div className="bg-background dark:bg-secondary rounded-lg border border-line md:p-6 p-4">
           <div className="flex items-center space-x-3 mb-6">
             <div className="p-2 bg-blue-500/10 rounded-lg">
               <Info size={20} className="text-blue-600" />
@@ -159,7 +164,7 @@ export default function Payment() {
           </div>
 
           {/* Wallet Address */}
-          <div className="bg-background dark:bg-foreground rounded-lg p-4 mb-6">
+          <div className="bg-background dark:bg-foreground rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-muted">
                 Wallet Address ({paymentData.network})
@@ -185,25 +190,13 @@ export default function Payment() {
 
           {/* Payment Proof Upload */}
           <div className="bg-background dark:bg-foreground rounded-lg p-4 mb-6">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="p-2 bg-blue-500/10 rounded-lg">
-                <Camera className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <h3 className="text-sm font-medium">
-                  Upload Payment Proof
-                </h3>
-                <p className="text-xs text-muted">
-                  Upload a screenshot or receipt of your payment for faster processing
-                </p>
-              </div>
-            </div>
+            
             
             <FileUpload
               onFileSelect={setPaymentProof}
               onFileRemove={() => setPaymentProof(null)}
               selectedFile={paymentProof}
-              label="Payment Proof (Optional)"
+              label="Upload Payment Proof"
               accept="image/*,.pdf"
               maxSize={5}
             />
@@ -216,7 +209,7 @@ export default function Payment() {
           </div>
 
           {/* Transaction Summary */}
-          <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-6">
+          <div className="bg-foreground rounded-lg p-4 mb-6">
             <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
               Transaction Summary
             </h3>
@@ -256,7 +249,7 @@ export default function Payment() {
                 <h3 className="text-sm font-medium text-gray-900 dark:text-white">
                   Important Notes
                 </h3>
-                <ul className="text-sm text-gray-600 dark:text-gray-400 mt-1 space-y-1">
+                <ul className="text-xs text-muted mt-1 space-y-1">
                   <li>• Only send {paymentData.currency} to this address</li>
                   <li>• Minimum deposit: {getMinDeposit(paymentData.currency)}</li>
                   <li>• Processing time: {getProcessingTime(paymentData.currency)}</li>
@@ -272,7 +265,7 @@ export default function Payment() {
                 <h3 className="text-sm font-medium text-gray-900 dark:text-white">
                   What happens next?
                 </h3>
-                <ul className="text-sm text-gray-600 dark:text-gray-400 mt-1 space-y-1">
+                <ul className="text-xs text-muted mt-1 space-y-1">
                   <li>• Send the exact amount to the address above</li>
                   <li>• Wait for blockchain confirmation</li>
                   <li>• Funds will be automatically added to your account</li>
