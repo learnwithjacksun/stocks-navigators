@@ -6,6 +6,7 @@ import authRouter from "./routes/auth.routes.js";
 import transactionRouter from "./routes/transaction.routes.js";
 import tradeRouter from "./routes/trade.routes.js";
 import userRouter from "./routes/user.routes.js";
+import paymentMethodRouter from "./routes/payment-method.routes.js";
 
 const Port = envFile.PORT || 5000;
 
@@ -34,6 +35,7 @@ app.use("/v1/auth", authRouter);
 app.use("/v1/transaction", transactionRouter);
 app.use("/v1/trade", tradeRouter);
 app.use("/v1/user", userRouter);
+app.use("/v1/payment-method", paymentMethodRouter);
 
 app.listen(Port, () => {
   console.log(`Server is running on port http://localhost:${Port}`);

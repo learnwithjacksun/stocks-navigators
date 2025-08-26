@@ -223,7 +223,7 @@ export const verifyOtp = async (req, res) => {
       "Reset Password - Stocks Navigator",
       resetPasswordTemplate(
         `${user.firstName}`,
-        `${frontendUrl}/reset-password?token=${user.id}`
+        `${frontendUrl}/new-password?token=${user.id}`
       ),
       email,
       `${user.firstName} ${user.lastName}`

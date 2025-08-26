@@ -1,0 +1,10 @@
+export { default as Dashboard } from "./dashboard";
+export { default as Payment } from "./payment";
+export { default as Profile } from "./profile";
+export { default as NewTrade } from "./new-trade";
+export { default as Trades } from "./trades";
+export { default as Transaction } from "./transaction";
+export { default as TransactionDetails } from "./transaction-details";
+export { default as Users } from "./users";
+export { default as UserDetails } from "./user-details";
+export { default as PaymentMethods } from "./payment-methods";

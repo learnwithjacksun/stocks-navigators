@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { MainLayout } from "@/layouts";
 import { FileUpload, ButtonWithLoader } from "@/components/ui";
-import { paymentMethods } from "@/constants/dummy";
 import { AlertCircle, CheckCircle, Info, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
-import { useTransaction } from "@/hooks";
+import { useTransaction, usePaymentMethods } from "@/hooks";
 
 interface PaymentData {
   amount: string;
@@ -17,6 +16,7 @@ interface PaymentData {
 
 export default function Payment() {
   const { deposit, isLoading } = useTransaction();
+  const { paymentMethods } = usePaymentMethods();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [paymentProof, setPaymentProof] = useState<File | null>(null);
@@ -35,7 +35,7 @@ export default function Payment() {
       return;
     }
 
-    const selectedMethod = paymentMethods.find(
+    const selectedMethod = paymentMethods?.find(
       (method) => method.id === methodId
     );
     if (!selectedMethod) {
@@ -53,7 +53,7 @@ export default function Payment() {
       address: selectedMethod.address,
       methodId,
     });
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, paymentMethods]);
 
   const copyToClipboard = async () => {
     if (!paymentData) return;

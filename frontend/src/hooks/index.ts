@@ -3,3 +3,5 @@ export {default as useAuth} from "./useAuth";
 export {default as useTransaction} from "./useTransaction";
 export {default as useTrades} from "./useTrades";
 export {default as useUsers} from "./useUsers";
+export {default as useTransactions} from "./useTransactions";
+export {default as usePaymentMethods} from "./usePaymentMethods";

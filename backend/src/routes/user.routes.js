@@ -18,12 +18,13 @@ const userRouter = Router();
 // admin routes
 userRouter.get("/all", authMiddleware, getAllUsers);
 userRouter.delete("/delete/:userId", authMiddleware, deleteUser);
-userRouter.post("/make-admin/:userId", authMiddleware, makeUserAdmin);
-userRouter.post("/remove-admin/:userId", authMiddleware, removeUserAdmin);
-userRouter.post("/deactivate/:userId", authMiddleware, deactivateUser);
-userRouter.post("/activate/:userId", authMiddleware, activateUser);
-userRouter.post("/update-balance/:userId", authMiddleware, updateUserBalance);
-userRouter.post("/update-bonus/:userId", authMiddleware, updateUserBonus);
+userRouter.put("/make-admin/:userId", authMiddleware, makeUserAdmin);
+userRouter.put("/remove-admin/:userId", authMiddleware, removeUserAdmin);
+userRouter.put("/deactivate/:userId", authMiddleware, deactivateUser);
+userRouter.put("/activate/:userId", authMiddleware, activateUser);
+userRouter.put("/update-balance/:userId", authMiddleware, updateUserBalance);
+userRouter.put("/update-bonus/:userId", authMiddleware, updateUserBonus);
+
 
 // end-user routes
 userRouter.put("/update-profile", authMiddleware, updateUserProfile);

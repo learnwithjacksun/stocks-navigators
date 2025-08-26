@@ -104,30 +104,38 @@ export const trades = [
 
 
 
-export const paymentMethods = [
+export const paymentMethods: IPaymentMethod[] = [
     {
       id: "1",
       currency: "Bitcoin",
       network: "BTC",
-      address: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+      address: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+      createdAt: "2024-01-15T10:30:00Z",
+      updatedAt: "2024-01-15T10:30:00Z"
     },
     {
       id: "2",
       currency: "Ethereum",
       network: "ERC-20",
-      address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
+      address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+      createdAt: "2024-01-15T10:30:00Z",
+      updatedAt: "2024-01-15T10:30:00Z"
     },
     {
       id: "3",
       currency: "Tether",
       network: "TRC-20",
-      address: "TX7s4aD4Vf4k7rH4fZPj6cvMqg8Lh2kPKP"
+      address: "TX7s4aD4Vf4k7rH4fZPj6cvMqg8Lh2kPKP",
+      createdAt: "2024-01-15T10:30:00Z",
+      updatedAt: "2024-01-15T10:30:00Z"
     },
     {
       id: "4",
       currency: "Litecoin",
       network: "LTC",
-      address: "ltc1qg0h7cvk7rzhh3n7t3kcs0jf0c9g6wj2r8fq2c4"
+      address: "ltc1qg0h7cvk7rzhh3n7t3kcs0jf0c9g6wj2r8fq2c4",
+      createdAt: "2024-01-15T10:30:00Z",
+      updatedAt: "2024-01-15T10:30:00Z"
     }
   ];
 

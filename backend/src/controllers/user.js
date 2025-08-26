@@ -178,9 +178,9 @@ export const updateUserBonus = async (req, res) => {
       reference: `BONUS-${Date.now()}`,
       description:
         type === "add"
-          ? `You received ${formatNumber(bonus)} as bonus`
-          : `You claimed ${formatNumber(bonus)} as bonus`,
-      status: "success",
+          ? `You received $${formatNumber(bonus)} as bonus`
+          : `You claimed $${formatNumber(bonus)} as bonus`,
+      status: "completed",
     });
     res.status(200).json({
       success: true,

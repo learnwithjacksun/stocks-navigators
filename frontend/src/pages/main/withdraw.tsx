@@ -1,28 +1,29 @@
 import { useState } from "react";
 import { MainLayout } from "@/layouts";
 import { PaymentMethodCard, AmountInput, ButtonWithLoader } from "@/components/ui";
-import { paymentMethods } from "@/constants/dummy";
 import { 
   ArrowDownRight, 
   AlertCircle, 
   CheckCircle, 
   Info,
   Wallet,
-  Shield
+  Shield,
+  Loader
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatNumber } from "@/helpers/formatNumber";
-import { useTransaction, useAuth } from "@/hooks";
+import { useTransaction, useAuth, usePaymentMethods } from "@/hooks";
 
 export default function Withdraw() {
   const { user } = useAuth();
   const { withdraw , isLoading } = useTransaction();
+  const { paymentMethods, isLoadingPaymentMethods } = usePaymentMethods();
   const [selectedMethod, setSelectedMethod] = useState<string>("");
   const [amount, setAmount] = useState("");
   const [withdrawAddress, setWithdrawAddress] = useState("");
   const [showConfirmation, setShowConfirmation] = useState(false);
 
-  const selectedPaymentMethod = paymentMethods.find(method => method.id === selectedMethod);
+  const selectedPaymentMethod = paymentMethods?.find(method => method.id === selectedMethod);
   const availableBalance = user?.availableBalance ?? 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -159,16 +160,22 @@ export default function Withdraw() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   Select Withdrawal Method
                 </label>
+                {isLoadingPaymentMethods ? (
+                  <div className="flex justify-center items-center h-24">
+                    <Loader className="w-6 h-6 animate-spin" />
+                  </div>
+                ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {paymentMethods.map((method) => (
+                  {paymentMethods?.map((method) => (
                     <PaymentMethodCard
                       key={method.id}
                       method={method}
                       selected={selectedMethod === method.id}
                       onSelect={setSelectedMethod}
                     />
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
                 {!selectedMethod && (
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                     Please select a withdrawal method to continue

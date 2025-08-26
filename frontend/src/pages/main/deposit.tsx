@@ -2,19 +2,21 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MainLayout } from "@/layouts";
 import { PaymentMethodCard, AmountInput, ButtonWithLoader } from "@/components/ui";
-import { paymentMethods } from "@/constants/dummy";
 import { 
-  CreditCard
+  CreditCard,
+  Loader
 } from "lucide-react";
+import { usePaymentMethods } from "@/hooks";
 
 
 export default function Deposit() {
   const navigate = useNavigate();
+  const { paymentMethods, isLoadingPaymentMethods } = usePaymentMethods();
   const [selectedMethod, setSelectedMethod] = useState<string>("");
   const [amount, setAmount] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const selectedPaymentMethod = paymentMethods.find(method => method.id === selectedMethod);
+  const selectedPaymentMethod = paymentMethods?.find(method => method.id === selectedMethod);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,8 +95,13 @@ export default function Deposit() {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 Select Payment Method
               </label>
+              {isLoadingPaymentMethods ? (
+                <div className="flex justify-center items-center h-24">
+                  <Loader className="w-6 h-6 animate-spin" />
+                </div>
+              ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {paymentMethods.map((method) => (
+                {paymentMethods?.map((method) => (
                   <PaymentMethodCard
                     key={method.id}
                     method={method}
@@ -103,6 +110,7 @@ export default function Deposit() {
                   />
                 ))}
               </div>
+              )}
               {!selectedMethod && (
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                   Please select a payment method to continue

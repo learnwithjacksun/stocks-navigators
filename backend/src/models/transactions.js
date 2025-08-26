@@ -13,7 +13,7 @@ const transactionSchema = new Schema(
     },
     type: {
       type: String,
-      enum: ["deposit", "withdrawal", "trade", "profit_claim", "fee"],
+      enum: ["deposit", "withdrawal", "trade", "profit_claim", "bonus"],
       required: true,
     },
     status: {
