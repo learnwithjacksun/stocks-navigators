@@ -4,13 +4,15 @@ import { useState } from "react";
 import MenuBar from "./menu-bar";
 import UserDropdown from "./user-dropdown";
 import { AnimatePresence } from "framer-motion";
+import { useAuth } from "@/hooks";
 
 export default function Header() {
+  const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
-  const userName = "Gift Jacksun";
-  const userAvatar = "https://ui-avatars.com/api/?background=13a870&color=fff&name=Gift+Jacksun";
+  const userName = `${user?.firstName} ${user?.lastName}`;
+  const userAvatar = user?.avatar;
 
   return (
     <>
@@ -53,7 +55,7 @@ export default function Header() {
                   isOpen={isUserDropdownOpen}
                   onClose={() => setIsUserDropdownOpen(false)}
                   userName={userName}
-                  userAvatar={userAvatar}
+                  userAvatar={userAvatar ?? "https://ui-avatars.com/api/?background=13a870&color=fff&name=Gift+Jacksun"}
                 />
               </div>
             </div>

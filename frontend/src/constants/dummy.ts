@@ -14,7 +14,7 @@ export interface StockData {
 
 
 // Dummy recent trades
-export const trades: ITrade[] = [
+export const trades = [
   {
     id: '1',
     symbol: 'AAPL',

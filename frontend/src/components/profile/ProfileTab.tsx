@@ -1,46 +1,34 @@
 import { useState } from "react";
 import { AvatarUpload, ButtonWithLoader, InputWithoutIcon } from "@/components/ui";
-import { toast } from "sonner";
+import { useAuth, useUsers } from "@/hooks";
 
 interface ProfileTabProps {
   initialData?: ProfileData;
-  onUpdate?: (data: ProfileData) => Promise<void>;
 }
 
-export default function ProfileTab({ initialData, onUpdate }: ProfileTabProps) {
-  const [isLoading, setIsLoading] = useState(false);
+export default function ProfileTab({ initialData }: ProfileTabProps) {
+  const { user } = useAuth();
+  const { updateUserProfile, isLoading: isUpdatingProfile } = useUsers();
   const [selectedAvatar, setSelectedAvatar] = useState<File | null>(null);
 
   // Profile data state
   const [profileData, setProfileData] = useState<ProfileData>(
     initialData || {
-      firstName: "John",
-      lastName: "Doe",
-      email: "john.doe@example.com",
-      phone: "+1 (555) 123-4567",
-      country: "United States",
-      city: "New York",
-      address: "123 Trading Street, NY 10001"
+      firstName: user?.firstName ?? "",
+      lastName: user?.lastName ?? "",
+      email: user?.email ?? "",
+      phone: user?.phone ?? "",
+      country: user?.country ?? "",
+      city: user?.city ?? "",
+      address: user?.address ?? ""
     }
   );
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+  
     
-    try {
-      if (onUpdate) {
-        await onUpdate(profileData);
-      } else {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      }
-      toast.success("Profile updated successfully!");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to update profile");
-    } finally {
-      setIsLoading(false);
-    }
+   await updateUserProfile(profileData, selectedAvatar ?? undefined)
   };
 
   const handleAvatarUpload = (file: File) => {
@@ -59,8 +47,8 @@ export default function ProfileTab({ initialData, onUpdate }: ProfileTabProps) {
           onImageSelect={handleAvatarUpload}
           onImageRemove={handleAvatarRemove}
           selectedImage={selectedAvatar}
-          currentAvatar={"https://ui-avatars.com/api/?background=13a870&color=fff&name=Gift+Jacksun"}
-          disabled={isLoading}
+          currentAvatar={user?.avatar ?? "https://ui-avatars.com/api/?background=13a870&color=fff&name=Gift+Jacksun"}
+          disabled={isUpdatingProfile}
         />
       </div>
 
@@ -76,7 +64,7 @@ export default function ProfileTab({ initialData, onUpdate }: ProfileTabProps) {
             value={profileData.firstName}
             onChange={(e) => setProfileData(prev => ({ ...prev, firstName: e.target.value }))}
             placeholder="Enter your first name"
-            disabled={isLoading}
+            disabled={isUpdatingProfile}
           />
           <InputWithoutIcon
             type="text"
@@ -84,7 +72,7 @@ export default function ProfileTab({ initialData, onUpdate }: ProfileTabProps) {
             value={profileData.lastName}
             onChange={(e) => setProfileData(prev => ({ ...prev, lastName: e.target.value }))}
             placeholder="Enter your last name"
-            disabled={isLoading}
+            disabled={isUpdatingProfile}
           />
           <InputWithoutIcon
             type="email"
@@ -92,7 +80,7 @@ export default function ProfileTab({ initialData, onUpdate }: ProfileTabProps) {
             value={profileData.email}
             onChange={(e) => setProfileData(prev => ({ ...prev, email: e.target.value }))}
             placeholder="Enter your email"
-            disabled={isLoading}
+            disabled={isUpdatingProfile}
           />
           <InputWithoutIcon 
             type="tel"
@@ -100,7 +88,7 @@ export default function ProfileTab({ initialData, onUpdate }: ProfileTabProps) {
             value={profileData.phone}
             onChange={(e) => setProfileData(prev => ({ ...prev, phone: e.target.value }))}
             placeholder="Enter your phone number"
-            disabled={isLoading}
+            disabled={isUpdatingProfile}
           />
         </div>
       </div>
@@ -117,7 +105,7 @@ export default function ProfileTab({ initialData, onUpdate }: ProfileTabProps) {
             value={profileData.country}
             onChange={(e) => setProfileData(prev => ({ ...prev, country: e.target.value }))}
             placeholder="Enter your country"
-            disabled={isLoading}
+            disabled={isUpdatingProfile}
           />
           <InputWithoutIcon
             type="text"
@@ -125,7 +113,7 @@ export default function ProfileTab({ initialData, onUpdate }: ProfileTabProps) {
             value={profileData.city}
             onChange={(e) => setProfileData(prev => ({ ...prev, city: e.target.value }))}
             placeholder="Enter your city"
-            disabled={isLoading}
+            disabled={isUpdatingProfile}
           />
           <div className="md:col-span-2">
             <InputWithoutIcon
@@ -134,7 +122,7 @@ export default function ProfileTab({ initialData, onUpdate }: ProfileTabProps) {
               value={profileData.address}
               onChange={(e) => setProfileData(prev => ({ ...prev, address: e.target.value }))}
               placeholder="Enter your full address"
-              disabled={isLoading}
+              disabled={isUpdatingProfile}
             />
           </div>
         </div>
@@ -144,8 +132,8 @@ export default function ProfileTab({ initialData, onUpdate }: ProfileTabProps) {
       <div className="flex justify-end">
         <ButtonWithLoader
           type="submit"
-          loading={isLoading}
-          disabled={isLoading}
+          loading={isUpdatingProfile}
+          disabled={isUpdatingProfile}
           className="btn-primary text-white px-6 h-10 text-sm rounded-lg"
           initialText="Save Changes"
           loadingText="Saving..."

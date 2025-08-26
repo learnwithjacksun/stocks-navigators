@@ -1,8 +1,10 @@
 import { navItems } from "@/constants/data";
+import { useAuth } from "@/hooks";
 import { LogOut } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 export default function Sidebar() {
+  const { logout } = useAuth();
   return (
     <div className="bg-primary min-h-[100dvh] flex flex-col">
       <div className="h-[70px] overflow-hidden">
@@ -31,7 +33,7 @@ export default function Sidebar() {
         ))}
       </ul>
 
-      <button className="mt-auto w-full h-11 bg-red-500 text-white text-sm font-medium">
+      <button className="mt-auto w-full h-11 bg-red-500 text-white text-sm font-medium" onClick={logout}>
         <LogOut size={20} />
         <span>Logout</span>
       </button>

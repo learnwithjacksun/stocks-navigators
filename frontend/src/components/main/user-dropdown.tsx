@@ -2,6 +2,7 @@ import { LogOut, User, Settings } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/hooks";
 
 interface UserDropdownProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ interface UserDropdownProps {
 
 export default function UserDropdown({ isOpen, onClose, userName, userAvatar }: UserDropdownProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { logout } = useAuth();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -85,7 +87,7 @@ export default function UserDropdown({ isOpen, onClose, userName, userAvatar }: 
           <div className="border-t border-line pt-2">
             <button
               onClick={() => {
-                // Handle logout logic here
+                logout();
                 onClose();
               }}
               className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:text-white hover:bg-red-500 dark:hover:bg-red-900 transition-colors w-full"

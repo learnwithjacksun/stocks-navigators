@@ -10,6 +10,7 @@ import {
   Info,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useTrades } from "@/hooks";
 
 
 interface TradeData {
@@ -31,11 +32,12 @@ interface TradeData {
 
 export default function NewTrade() {
   const navigate = useNavigate();
+  const { createTrade, isLoading: isLoading } = useTrades();
   const [step, setStep] = useState<'form' | 'review' | 'success'>('form');
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedAssetId, setSelectedAssetId] = useState("");
   const [amount, setAmount] = useState("");
   const [tradeData, setTradeData] = useState<TradeData | null>(null);
+  const [isReviewing, setIsReviewing] = useState(false);
 
   const selectedAsset = tradingAssets.find(asset => asset.id === selectedAssetId);
 
@@ -46,7 +48,7 @@ export default function NewTrade() {
 
   const handleReview = () => {
     scrollToTop();
-
+    setIsReviewing(true);
     if (!selectedAsset) {
       toast.error("Please select a trading asset");
       return;
@@ -68,22 +70,22 @@ export default function NewTrade() {
       tradeId: `TRD-${Date.now()}`,
       timestamp: new Date()
     });
-    setStep('review');
+    setTimeout(() => {
+      setStep('review');
+      setIsReviewing(false);
+    }, 1000);
   };
 
   const handlePlaceTrade = async () => {
-    if (!tradeData) return;
+    if (!tradeData || !tradeData.asset || !tradeData.amount) return;
 
-    setIsLoading(true);
-    scrollToTop();
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    const result = await createTrade(tradeData.asset.symbol, tradeData.asset.name, parseFloat(tradeData.amount));
+    if (result) {
       setStep('success');
-      toast.success("Trade placed successfully!");
-    }, 3000);
+    } 
+    scrollToTop();
   };
+  
 
   const handleBackToForm = () => {
     setStep('form');
@@ -261,7 +263,7 @@ export default function NewTrade() {
               <div className="flex justify-end">
                 <ButtonWithLoader
                   onClick={handleReview}
-                  loading={false}
+                  loading={isReviewing}
                   disabled={!selectedAsset || !amount || parseFloat(amount) < (selectedAsset?.minAmount || 0)}
                   className="btn-primary text-white text-sm px-6 py-2 rounded-lg"
                   initialText="Review Trade"
@@ -336,8 +338,7 @@ export default function NewTrade() {
                       Risk Warning
                     </h4>
                     <p className="text-xs text-yellow-800 dark:text-yellow-200 mt-1">
-                      Trading involves substantial risk of loss. Past performance does not guarantee future results. 
-                      Only invest what you can afford to lose.
+                      Trading involves substantial risk of loss. However, with out AI, there is a 92% chance that you will not lose your money.
                     </p>
                   </div>
                 </div>

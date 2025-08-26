@@ -1,25 +1,39 @@
 import { MainLayout } from "@/layouts";
 import { StatCard, RecentTrades } from "@/components/ui";
 import { StockMarket } from "react-ts-tradingview-widgets";
-import { DollarSign, TrendingUp, Wallet, BarChart3 } from "lucide-react";
+import { DollarSign, TrendingUp, Wallet, BarChart3, Loader2 } from "lucide-react";
 import { formatNumber } from "@/helpers/formatNumber";
-import { useTheme } from "@/hooks";
+import { useAuth, useTheme, useTransaction } from "@/hooks";
 import { Link } from "react-router-dom";
 import CountUp from "react-countup";
 
 export default function Dashboard() {
   const { theme } = useTheme();
+  const { user, isCheckAuth } = useAuth(); 
+  const { totalSuccessfulDeposits, totalSuccessfulWithdrawals } = useTransaction();
+  if (isCheckAuth && !user) {
+    return (
+      <>
+        <div className="center h-[100dvh]">
+          <div className="flex items-center gap-2">
+            <Loader2 className="w-10 h-10 animate-spin" />
+            <p className="text-sm text-gray-500">Loading...</p>
+          </div>
+        </div>
+      </>
+    );
+  }
   return (
     <MainLayout title="Overview" subtitle="Track your portfolio performance">
       <div className="space-y-6">
         {/* Portfolio Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 ">
           <div className="p-6 flex justify-between items-center text-white bg-gradient-to-br from-green-900 via-primary to-primary rounded-lg border border-line">
             <div>
               <p className=" font-medium text-white/80">Available Cash</p>
               <p className="text-2xl font-bold text-white mt-1">
                 <CountUp
-                  end={23000}
+                  end={user?.availableBalance ?? 0}
                   decimals={2}
                   prefix="$"
                 />
@@ -32,15 +46,21 @@ export default function Dashboard() {
          
 
           <StatCard
-            title="Total Gain/Loss"
-            value={`$${formatNumber(1000)}`}
+            title="Total Bonus"
+            value={`$${formatNumber(user?.bonus ?? 0)}`}
             changePercent={10}
             icon={TrendingUp}
             trend={"up"}
           />
           <StatCard
-            title="Total Invested"
-            value={`$${formatNumber(1000)}`}
+            title="Total Deposits"
+            value={`${totalSuccessfulDeposits}`}
+            icon={BarChart3}
+            trend="neutral"
+          />
+          <StatCard
+            title="Total Withdrawals"
+            value={`${totalSuccessfulWithdrawals}`}
             icon={BarChart3}
             trend="neutral"
           />

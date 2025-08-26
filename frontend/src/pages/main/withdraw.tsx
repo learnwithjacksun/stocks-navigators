@@ -11,16 +11,19 @@ import {
   Shield
 } from "lucide-react";
 import { toast } from "sonner";
+import { formatNumber } from "@/helpers/formatNumber";
+import { useTransaction, useAuth } from "@/hooks";
 
 export default function Withdraw() {
+  const { user } = useAuth();
+  const { withdraw , isLoading } = useTransaction();
   const [selectedMethod, setSelectedMethod] = useState<string>("");
   const [amount, setAmount] = useState("");
   const [withdrawAddress, setWithdrawAddress] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   const selectedPaymentMethod = paymentMethods.find(method => method.id === selectedMethod);
-  const availableBalance = 23000;
+  const availableBalance = user?.availableBalance ?? 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,12 +32,12 @@ export default function Withdraw() {
         return;
     };
 
-    setIsProcessing(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsProcessing(false);
-      setShowConfirmation(true);
-    }, 2000);
+   const result = await withdraw(parseFloat(amount), selectedMethod, withdrawAddress);
+   if (result) {
+    setShowConfirmation(true);
+   } else {
+    toast.error("Withdrawal failed");
+   }
   };
 
   const getMinWithdrawal = (currency: string) => {
@@ -120,7 +123,7 @@ export default function Withdraw() {
 
         {/* Withdrawal Form */}
         {!showConfirmation && (
-          <div className="bg-background dark:bg-secondary rounded-lg border border-line p-6">
+          <div className="bg-background dark:bg-secondary rounded-lg border border-line p-4 md:p-6">
             <div className="flex space-x-3 mb-6">
               <div className="p-2 h-fit bg-red-500/10 rounded-lg">
                 <ArrowDownRight className="w-6 h-6 text-red-600" />
@@ -262,7 +265,7 @@ export default function Withdraw() {
               {/* Submit Button */}
               <ButtonWithLoader
                 type="submit"
-                loading={isProcessing}
+                loading={isLoading}
                 initialText="Submit Withdrawal"
                 loadingText="Processing..."
                 disabled={
@@ -282,31 +285,31 @@ export default function Withdraw() {
 
         {/* Confirmation Screen */}
         {showConfirmation && selectedPaymentMethod && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <div className="bg-background dark:bg-secondary rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 md:p-6">
             <div className="flex items-center space-x-3 mb-6">
-              <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
-                <CheckCircle className="w-6 h-6 text-green-600" />
+              <div className="p-2 bg-green-500/10 rounded-lg">
+                <CheckCircle size={24} className=" text-green-600" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h2 className="text-base font-semibold text-gray-900 dark:text-white">
                   Withdrawal Submitted
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-muted">
                   Your withdrawal request has been submitted successfully
                 </p>
               </div>
             </div>
 
             {/* Transaction Details */}
-            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-6">
-              <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
+            <div className="bg-foreground rounded-lg p-4 mb-6">
+              <h3 className="text-sm font-medium text-muted mb-3">
                 Transaction Details
               </h3>
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2 text-xs md:text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-500 dark:text-gray-400">Amount:</span>
+                  <span className="text-muted">Amount:</span>
                   <span className="font-medium text-gray-900 dark:text-white">
-                    ${parseFloat(amount).toFixed(2)}
+                    ${formatNumber(parseFloat(amount))}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -333,12 +336,12 @@ export default function Withdraw() {
             {/* Important Notes */}
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
-                <Info className="w-5 h-5 text-blue-500 mt-0.5" />
+                <Info className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
                 <div>
                   <h3 className="text-sm font-medium text-gray-900 dark:text-white">
                     What happens next?
                   </h3>
-                  <ul className="text-sm text-gray-600 dark:text-gray-400 mt-1 space-y-1">
+                  <ul className="md:text-sm text-xs text-muted mt-1 space-y-1">
                     <li>• Your withdrawal request is being processed</li>
                     <li>• You'll receive an email confirmation</li>
                     <li>• Funds will be sent to your address within {getProcessingTime(selectedPaymentMethod.currency)}</li>
@@ -348,12 +351,12 @@ export default function Withdraw() {
               </div>
 
               <div className="flex items-start space-x-3">
-                <AlertCircle className="w-5 h-5 text-yellow-500 mt-0.5" />
+                <AlertCircle className="w-5 h-5 text-yellow-500 mt-0.5 flex-shrink-0" />
                 <div>
                   <h3 className="text-sm font-medium text-gray-900 dark:text-white">
                     Important Notes
                   </h3>
-                  <ul className="text-sm text-gray-600 dark:text-gray-400 mt-1 space-y-1">
+                  <ul className="md:text-sm text-xs text-muted mt-1 space-y-1">
                     <li>• Network fees have been deducted from your withdrawal amount</li>
                     <li>• Withdrawals cannot be cancelled once submitted</li>
                     <li>• Ensure your wallet supports {selectedPaymentMethod.network} network</li>
@@ -367,7 +370,7 @@ export default function Withdraw() {
             <div className="flex space-x-4 mt-6">
               <button
                 onClick={() => setShowConfirmation(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="flex-1 text-sm px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 Back to Form
               </button>
@@ -378,7 +381,7 @@ export default function Withdraw() {
                   setAmount("");
                   setWithdrawAddress("");
                 }}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="flex-1 text-sm px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 New Withdrawal
               </button>

@@ -14,6 +14,10 @@ const loginSchema = z.object({
     password: z.string().min(8, {message: "Password must be at least 8 characters long"}),
 })
 
+const verifySchema = z.object({
+    otp: z.string().min(6, {message: "OTP must be 6 digits"}),
+})
+
 const forgotPasswordSchema = z.object({
     email: z.string().email({message: "Invalid email address"}),
 })
@@ -30,14 +34,17 @@ type RegisterSchema = z.infer<typeof registerSchema>
 type LoginSchema = z.infer<typeof loginSchema>
 type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>
 type NewPasswordSchema = z.infer<typeof newPasswordSchema>;
+type VerifySchema = z.infer<typeof verifySchema>;
 
 export {
   registerSchema,
   loginSchema,
   forgotPasswordSchema,
   newPasswordSchema,
+  verifySchema,
   type RegisterSchema,
   type LoginSchema,
   type ForgotPasswordSchema,
   type NewPasswordSchema,
+  type VerifySchema,
 };

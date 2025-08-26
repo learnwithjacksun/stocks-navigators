@@ -8,8 +8,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, type RegisterSchema } from "@/schemas/auth";
 import { Country } from "country-state-city";
+import { useAuth } from "@/hooks";
 
 export default function Register() {
+  const { registerUser, isLoading } = useAuth();
   const countryList = Country.getAllCountries();
   const {
     register,
@@ -19,7 +21,7 @@ export default function Register() {
     resolver: zodResolver(registerSchema),
   });
   const onSubmit = (data: RegisterSchema) => {
-    console.log(data);
+    registerUser(data);
   };
   return (
     <div className="bg-foreground dark:bg-background min-h-[100dvh]">
@@ -79,6 +81,7 @@ export default function Register() {
               type="submit"
               initialText="Register"
               loadingText="Registering..."
+              loading={isLoading}
               className="bg-[#3498db] w-full h-12 text-white rounded-sm mt-6 font-semibold"
             />
           </form>

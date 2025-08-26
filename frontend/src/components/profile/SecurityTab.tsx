@@ -2,14 +2,14 @@ import { useState } from "react";
 import { ButtonWithLoader } from "@/components/ui";
 import { Key, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
+import { useUsers } from "@/hooks";
 
 interface SecurityTabProps {
   initialSettings?: SecuritySettings;
-  onUpdate?: (settings: SecuritySettings) => Promise<void>;
 }
 
-export default function SecurityTab({ initialSettings, onUpdate }: SecurityTabProps) {
-  const [isLoading, setIsLoading] = useState(false);
+export default function SecurityTab({ initialSettings }: SecurityTabProps) {
+  const { changeUserPassword, isLoading: isChangingPassword } = useUsers();
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
@@ -41,27 +41,12 @@ export default function SecurityTab({ initialSettings, onUpdate }: SecurityTabPr
       return;
     }
 
-    setIsLoading(true);
     
-    try {
-      if (onUpdate) {
-        await onUpdate(securitySettings);
-      } else {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      }
-      toast.success("Security settings updated successfully!");
-      setSecuritySettings(prev => ({
-        ...prev,
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: ""
-      }));
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to update security settings");
-    } finally {
-      setIsLoading(false);
-    }
+    await changeUserPassword({
+      newPassword: securitySettings.newPassword,
+      oldPassword: securitySettings.currentPassword
+    });
+    
   };
 
   const togglePasswordVisibility = (field: keyof typeof showPasswords) => {
@@ -90,7 +75,7 @@ export default function SecurityTab({ initialSettings, onUpdate }: SecurityTabPr
                 onChange={(e) => setSecuritySettings(prev => ({ ...prev, currentPassword: e.target.value }))}
                 className="w-full pl-10 pr-10 h-11 text-sm border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background dark:bg-foreground text-gray-900 dark:text-white"
                 placeholder="Enter current password"
-                disabled={isLoading}
+                disabled={isChangingPassword}
               />
               <Key className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted" />
               <button
@@ -114,7 +99,7 @@ export default function SecurityTab({ initialSettings, onUpdate }: SecurityTabPr
                 onChange={(e) => setSecuritySettings(prev => ({ ...prev, newPassword: e.target.value }))}
                 className="w-full pl-10 pr-10 h-11 text-sm border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background dark:bg-foreground text-gray-900 dark:text-white"
                 placeholder="Enter new password"
-                disabled={isLoading}
+                disabled={isChangingPassword}
               />
               <Key className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted" />
               <button
@@ -138,7 +123,7 @@ export default function SecurityTab({ initialSettings, onUpdate }: SecurityTabPr
                 onChange={(e) => setSecuritySettings(prev => ({ ...prev, confirmPassword: e.target.value }))}
                 className="w-full pl-10 pr-10 h-11 text-sm border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background dark:bg-foreground text-gray-900 dark:text-white"
                 placeholder="Confirm new password"
-                disabled={isLoading}
+                disabled={isChangingPassword}
               />
               <Key className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted" />
               <button
@@ -171,7 +156,7 @@ export default function SecurityTab({ initialSettings, onUpdate }: SecurityTabPr
               checked={securitySettings.twoFactorEnabled}
               onChange={(e) => setSecuritySettings(prev => ({ ...prev, twoFactorEnabled: e.target.checked }))}
               className="sr-only peer"
-              disabled={isLoading}
+              disabled={isChangingPassword}
             />
             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
           </label>
@@ -182,8 +167,8 @@ export default function SecurityTab({ initialSettings, onUpdate }: SecurityTabPr
       <div className="flex justify-end">
         <ButtonWithLoader
           type="submit"
-          loading={isLoading}
-          disabled={isLoading || !securitySettings.currentPassword || !securitySettings.newPassword || !securitySettings.confirmPassword}
+          loading={isChangingPassword}
+          disabled={isChangingPassword || !securitySettings.currentPassword || !securitySettings.newPassword || !securitySettings.confirmPassword}
           className="btn-primary text-white px-6 h-10 text-sm rounded-lg"
           initialText="Update Security"
           loadingText="Updating..."

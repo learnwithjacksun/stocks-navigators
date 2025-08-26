@@ -4,15 +4,19 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { forgotPasswordSchema, type ForgotPasswordSchema } from "@/schemas/auth";
+import { useAuth } from "@/hooks";
 
 export default function ForgotPassword() {
+  const { forgotPassword, isLoading } = useAuth();
     const [showSuccess, setShowSuccess] = useState(false)
     const {register, handleSubmit, formState: {errors}} = useForm<ForgotPasswordSchema>({
         resolver: zodResolver(forgotPasswordSchema),
     })
-    const onSubmit = (data: ForgotPasswordSchema) => {
-        console.log(data)
-        setShowSuccess(true)
+    const onSubmit = async (data: ForgotPasswordSchema) => {
+        const response = await forgotPassword(data.email)
+        if (response) {
+            setShowSuccess(true)
+        }
     }
   
   return (
@@ -49,6 +53,7 @@ export default function ForgotPassword() {
               type="submit"
               initialText="Send Reset Link"
               loadingText="Sending..."
+              loading={isLoading}
               className="bg-[#3498db] w-full h-12 text-white rounded-sm mt-6 font-semibold"
             />
 

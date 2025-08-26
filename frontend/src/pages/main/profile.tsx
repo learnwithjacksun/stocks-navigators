@@ -10,21 +10,7 @@ import {
 export default function Profile() {
   const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'preferences'>('profile');
 
-  // API handlers for each tab
-  const handleProfileUpdate = async (profileData: ProfileData) => {
-    // TODO: Implement API call to update profile
-    console.log('Updating profile:', profileData);
-  };
-
-  const handleSecurityUpdate = async (securitySettings: SecuritySettings) => {
-    // TODO: Implement API call to update security settings
-    console.log('Updating security settings:', securitySettings);
-  };
-
-  const handlePreferencesUpdate = async (preferences: PreferencesSettings) => {
-    // TODO: Implement API call to update preferences
-    console.log('Updating preferences:', preferences);
-  };
+ 
 
   const tabs = [
     { id: 'profile', label: 'Profile', icon: User },
@@ -65,17 +51,17 @@ export default function Profile() {
         <div className="bg-background dark:bg-secondary rounded-lg border border-line md:p-6 p-4">
           {/* Profile Tab */}
           {activeTab === 'profile' && (
-            <ProfileTab onUpdate={handleProfileUpdate} />
+            <ProfileTab  />
           )}
 
           {/* Security Tab */}
           {activeTab === 'security' && (
-            <SecurityTab onUpdate={handleSecurityUpdate} />
+            <SecurityTab  />
           )}
 
           {/* Preferences Tab */}
           {activeTab === 'preferences' && (
-            <PreferencesTab onUpdate={handlePreferencesUpdate} />
+            <PreferencesTab  />
           )}
         </div>
       

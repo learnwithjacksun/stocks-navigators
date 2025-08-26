@@ -12,11 +12,10 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { formatNumber } from "@/helpers/formatNumber";
-import type { Transaction } from "@/constants/dummy";
 import { Link } from "react-router-dom";
 
 interface TransactionCardProps {
-  transaction: Transaction;
+  transaction: ITransaction;
 }
 
 export default function TransactionCard({
@@ -173,7 +172,7 @@ export default function TransactionCard({
                 >
                   {getTypeText(transaction.type)}
                 </span>
-                <div className="text-ellipsis overflow-hidden whitespace-nowrap line-clamp-1">
+                <div className="text-ellipsis overflow-hidden whitespace-nowrap line-clamp-1 text-sm md:max-w-[200px]">
                   {transaction.description}
                 </div>
               </div>
@@ -189,7 +188,7 @@ export default function TransactionCard({
             </div>
             <div className="space-y-2 border md:border-none p-3 rounded-md md:p-0 border-line">
               <div className="text-sm text-muted">Date</div>
-              <div className="">{formatDate(transaction.createdAt)}</div>
+              <div className="">{formatDate(transaction.createdAt.toString())}</div>
             </div>
             <div className="space-y-2 border md:border-none p-3 rounded-md md:p-0 border-line">
               <div className="text-sm text-muted">Status</div>

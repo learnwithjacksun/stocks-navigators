@@ -1,35 +1,33 @@
 import { useState } from "react";
 import { SelectWithoutIcon, TradeCard } from '@/components/ui';
-import { trades } from '@/constants/dummy';
 import { MainLayout } from '@/layouts';
-import { Plus, Filter, TrendingUp, Play, TrendingDown } from 'lucide-react';
+import { Plus, Filter, TrendingUp, Play, TrendingDown, Loader } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTrades } from "@/hooks";
 
 export default function Trades() {
+  const { trades,  isLoadingTrades } = useTrades();
   const [filter, setFilter] = useState<'all' | 'running' | 'completed' | 'paused'>('all');
   const [profitFilter, setProfitFilter] = useState<'all' | 'profit' | 'loss'>('all');
 
-  const filteredTrades = trades.filter(trade => {
+  const filteredTrades = trades?.filter(trade => {
     const statusMatch = filter === 'all' || trade.status === filter;
     const profitMatch = profitFilter === 'all' || 
-      (profitFilter === 'profit' && trade.profit > 0) || 
-      (profitFilter === 'loss' && trade.profit < 0);
+      (profitFilter === 'profit' && trade.currentValue > trade.investmentAmount) || 
+      (profitFilter === 'loss' && trade.currentValue < trade.investmentAmount);
     
     return statusMatch && profitMatch;
   });
 
-  const handleClaimProfit = (tradeId: string) => {
-    // Handle profit claiming - this would typically update the trade status
-    console.log(`Claimed profit for trade ${tradeId}`);
-  };
+ 
 
   const getStatusCount = (status: string) => {
-    return trades.filter(trade => trade.status === status).length;
+    return trades?.filter(trade => trade.status === status).length;
   };
 
   const getProfitCount = (type: 'profit' | 'loss') => {
-    return trades.filter(trade => 
-      type === 'profit' ? trade.profit > 0 : trade.profit < 0
+    return trades?.filter(trade => 
+      type === 'profit' ? trade.currentValue > trade.investmentAmount : trade.currentValue < trade.investmentAmount
     ).length;
   };
 
@@ -113,14 +111,23 @@ export default function Trades() {
           </div>
         </div>
 
+        {isLoadingTrades && !filteredTrades && (
+          <div className="h-40 center gap-4">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              Loading trades...
+            </h3>
+            <Loader className="animate-spin" /> 
+          </div>
+        )}
+
         {/* Trades Grid */}
-        {filteredTrades.length > 0 ? (
+        {filteredTrades && filteredTrades.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {filteredTrades.map((trade) => (
+            {filteredTrades?.map((trade) => (
               <TradeCard
                 key={trade.id}
                 trade={trade}
-                onClaimProfit={handleClaimProfit}
+              
               />
             ))}
           </div>
@@ -145,38 +152,35 @@ export default function Trades() {
         )}
 
         {/* Summary Stats */}
-        {filteredTrades.length > 0 && (
+        {filteredTrades && filteredTrades.length > 0 && (
           <div className="bg-background dark:bg-secondary rounded-lg border border-line p-6">
           
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {filteredTrades.length}
+                  {filteredTrades?.length}
                 </div>
                 <div className="text-sm text-gray-500 dark:text-gray-400">Total Trades</div>
               </div>
               <div className="text-center">
                 <div className="text-lg font-bold text-green-600">
-                  ${filteredTrades
-                    .filter(t => t.profit > 0)
-                    .reduce((sum, t) => sum + t.profit, 0)
+                  ${filteredTrades?.filter(t => t.currentValue > t.investmentAmount)
+                    .reduce((sum, t) => sum + t.currentValue, 0)
                     .toLocaleString()}
                 </div>
                 <div className="text-sm text-gray-500 dark:text-gray-400">Total Profit</div>
               </div>
               <div className="text-center">
                 <div className="text-lg font-bold text-red-600">
-                  ${Math.abs(filteredTrades
-                    .filter(t => t.profit < 0)
-                    .reduce((sum, t) => sum + t.profit, 0))
+                  ${Math.abs(filteredTrades?.filter(t => t.currentValue < t.investmentAmount)
+                    .reduce((sum, t) => sum + t.currentValue, 0))
                     .toLocaleString()}
                 </div>
                 <div className="text-sm text-gray-500 dark:text-gray-400">Total Loss</div>
               </div>
               <div className="text-center">
                 <div className="text-lg font-bold text-gray-900 dark:text-white">
-                  ${filteredTrades
-                    .reduce((sum, t) => sum + t.currentValue, 0)
+                  ${filteredTrades?.reduce((sum, t) => sum + t.currentValue, 0)
                     .toLocaleString()}
                 </div>
                 <div className="text-sm text-gray-500 dark:text-gray-400">Current Value</div>

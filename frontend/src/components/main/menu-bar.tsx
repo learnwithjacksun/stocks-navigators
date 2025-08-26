@@ -3,6 +3,7 @@ import { LogOut, X } from "lucide-react";
 import { useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useAuth } from "@/hooks";
 
 interface MenuProps {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface MenuProps {
 }
 
 export default function MenuBar({ isOpen, onClose }: MenuProps) {
+  const { logout } = useAuth();
  
   useEffect(() => {
     if (isOpen) {
@@ -65,7 +67,7 @@ export default function MenuBar({ isOpen, onClose }: MenuProps) {
         ))}
       </ul>
 
-      <button className="mt-auto w-full h-11 bg-red-500 text-white text-sm font-medium">
+      <button className="mt-auto w-full h-11 bg-red-500 text-white text-sm font-medium" onClick={logout}>
         <LogOut size={20} />
         <span>Logout</span>
       </button>

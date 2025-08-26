@@ -11,7 +11,7 @@ export {default as PaymentMethodCard} from "./PaymentMethodCard";
 export {default as AmountInput} from "./AmountInput";
 export {default as FileUpload} from "./FileUpload";
 export {default as AvatarUpload} from "./AvatarUpload";
-export {default as Trades} from "./trades";
 export {default as TradeCard} from "./TradeCard";
 export {default as TransactionCard} from "./TransactionCard";
+export {default as TransactionSkeleton} from "./TransactionSkeleton";
 

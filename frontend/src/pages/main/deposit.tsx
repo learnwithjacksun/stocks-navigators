@@ -63,7 +63,7 @@ export default function Deposit() {
     <MainLayout>
       <div className="max-w-4xl mx-auto space-y-6 mt-10">
         {/* Deposit Form */}
-        <div className="bg-background dark:bg-secondary rounded-lg border border-line p-6">
+        <div className="bg-background dark:bg-secondary rounded-lg border border-line p-4 md:p-6">
           <div className="flex space-x-3 mb-6">
             <div className="p-2 h-fit bg-green-500/10 rounded-lg">
               <CreditCard className="w-6 h-6 text-green-600" />

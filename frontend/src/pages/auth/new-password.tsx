@@ -1,15 +1,28 @@
 import { ButtonWithLoader, InputWithoutIcon } from "@/components/ui";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { newPasswordSchema, type NewPasswordSchema } from "@/schemas/auth";
+import { useAuth } from "@/hooks";
+import { toast } from "sonner";
 
 export default function NewPassword() {
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token")
+  const { resetPassword, isLoading } = useAuth();
   const {register, handleSubmit, formState: {errors}} = useForm<NewPasswordSchema>({
     resolver: zodResolver(newPasswordSchema),
   })
-  const onSubmit = (data: NewPasswordSchema) => {
-    console.log(data)
+  const onSubmit = async (data: NewPasswordSchema) => {
+    if (!token) {
+      toast.error("Invalid token")
+      return
+    }
+     await resetPassword({
+      password: data.password,
+      userId: token
+    })
+    
   }
   return (
     <div className="bg-foreground dark:bg-background min-h-[100dvh]">
@@ -45,6 +58,7 @@ export default function NewPassword() {
               initialText="Update Password"
               loadingText="Updating..."
               className="bg-[#3498db] w-full h-12 text-white rounded-sm mt-6 font-semibold"
+              loading={isLoading}
             />
 
            

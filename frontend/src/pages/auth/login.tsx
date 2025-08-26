@@ -3,14 +3,16 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginSchema } from "@/schemas/auth";
+import { useAuth } from "@/hooks";
 
 export default function Login() {
+  const { login, isLoading } = useAuth();
     const {register, handleSubmit, formState: {errors}} = useForm<LoginSchema>({
         resolver: zodResolver(loginSchema),
     })
 
     const onSubmit = (data: LoginSchema) => {
-        console.log(data)
+        login(data)
     }
   return (
     <div className="bg-foreground dark:bg-background min-h-[100dvh]">
@@ -50,6 +52,7 @@ export default function Login() {
               type="submit"
               initialText="Sign in"
               loadingText="Signing in..."
+              loading={isLoading}
               className="bg-[#3498db] w-full h-12 text-white rounded-sm mt-6 font-semibold"
             />
 

@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { SelectWithoutIcon, TransactionCard } from '@/components/ui';
-import { transactions } from '@/constants/dummy';
+import { SelectWithoutIcon, TransactionCard, TransactionSkeleton } from '@/components/ui';
 import { MainLayout } from '@/layouts';
 import { 
   Filter, 
@@ -9,14 +8,16 @@ import {
   TrendingDown,
   DollarSign,
 } from 'lucide-react';
+import { useTransaction } from "@/hooks";
 
 export default function Transaction() {
+  const { transactions, totalTransactions, totalInflow, totalOutflow, isLoadingTransactions } = useTransaction();
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<'all' | 'deposit' | 'withdrawal' | 'trade' | 'profit_claim' | 'fee'>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | 'completed' | 'pending' | 'processing' | 'failed'>('all');
   const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week' | 'month'>('all');
 
-  const filteredTransactions = transactions.filter(transaction => {
+  const filteredTransactions = transactions?.filter(transaction => {
     const searchMatch = searchTerm === "" || 
       transaction.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -52,7 +53,7 @@ export default function Transaction() {
  
 
   const getTotalAmount = () => {
-    return filteredTransactions.reduce((sum, t) => sum + t.amount, 0);
+    return filteredTransactions?.reduce((sum, t) => sum + t.amount, 0) ?? 0;
   };
 
 
@@ -66,52 +67,76 @@ export default function Transaction() {
   return (
     <MainLayout title="Transaction History" subtitle="View and manage your transaction history">
       <div className="mt-10 space-y-6">
-        {/* Header with Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-background dark:bg-secondary rounded-lg border border-line p-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-500/10 rounded-lg">
-                <DollarSign className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">Total Transactions</div>
-                <div className="text-xl font-semibold text-gray-900 dark:text-white">
-                  {transactions.length}
+        {/* Loading State */}
+        {isLoadingTransactions && (
+          <div className="space-y-4">
+            {[...Array(5)].map((_, index) => (
+              <TransactionSkeleton key={index} />
+            ))}
+          </div>
+        )}
+
+        {/* Content when not loading */}
+        {!isLoadingTransactions && (
+          <>
+                        {/* Header with Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-background dark:bg-secondary rounded-lg border border-line p-4">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-blue-500/10 rounded-lg">
+                    <DollarSign className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Total Transactions</div>
+                    <div className="text-xl font-semibold text-gray-900 dark:text-white">
+                      {isLoadingTransactions ? (
+                        <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-16 animate-pulse"></div>
+                      ) : (
+                        totalTransactions
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div className="bg-background dark:bg-secondary rounded-lg border border-line p-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-green-500/10 rounded-lg">
-                <TrendingUp className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">Total Inflow</div>
-                <div className="text-xl font-semibold text-green-600">
-                  ${transactions.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0).toLocaleString()}
+              <div className="bg-background dark:bg-secondary rounded-lg border border-line p-4">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-green-500/10 rounded-lg">
+                    <TrendingUp className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Total Inflow</div>
+                    <div className="text-xl font-semibold text-green-600">
+                      {isLoadingTransactions ? (
+                        <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-20 animate-pulse"></div>
+                      ) : (
+                        `$${totalInflow.toLocaleString()}`
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div className="bg-background dark:bg-secondary rounded-lg border border-line p-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-red-500/10 rounded-lg">
-                <TrendingDown className="w-5 h-5 text-red-600" />
-              </div>
-              <div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">Total Outflow</div>
-                <div className="text-xl font-semibold text-red-600">
-                  ${Math.abs(transactions.filter(t => t.amount < 0).reduce((sum, t) => sum + t.amount, 0)).toLocaleString()}
+              <div className="bg-background dark:bg-secondary rounded-lg border border-line p-4">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-red-500/10 rounded-lg">
+                    <TrendingDown className="w-5 h-5 text-red-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Total Outflow</div>
+                    <div className="text-xl font-semibold text-red-600">
+                      {isLoadingTransactions ? (
+                        <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-20 animate-pulse"></div>
+                      ) : (
+                        `$${Math.abs(totalOutflow).toLocaleString()}`
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          
-        </div>
+              
+            </div>
 
         {/* Search and Filters */}
         <div className="bg-background dark:bg-secondary rounded-lg border border-line p-6">
@@ -184,13 +209,13 @@ export default function Transaction() {
         </div>
 
         {/* Filtered Results Summary */}
-        {filteredTransactions.length > 0 && (
+        {filteredTransactions && filteredTransactions?.length > 0 && (
           <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
             <div className="flex md:items-center justify-between gap-2 flex-wrap">
               <div className="flex items-center space-x-2">
                 <Filter className="w-4 h-4 text-blue-600" />
                 <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                  Showing {filteredTransactions.length} of {transactions.length} transactions
+                  Showing {filteredTransactions?.length} of {transactions?.length} transactions
                 </span>
               </div>
               <div className="text-sm text-blue-800 dark:text-blue-200">
@@ -202,9 +227,9 @@ export default function Transaction() {
         )}
 
         {/* Transactions Grid */}
-        {filteredTransactions.length > 0 ? (
+          {filteredTransactions && filteredTransactions?.length > 0 ? (
           <div className="grid grid-cols-1 gap-2">
-            {filteredTransactions.map((transaction) => (
+            {filteredTransactions?.map((transaction) => (
               <TransactionCard
                 key={transaction.id}
                 transaction={transaction}
@@ -234,6 +259,8 @@ export default function Transaction() {
               Clear Filters
             </button>
           </div>
+        )}
+          </>
         )}
 
         
