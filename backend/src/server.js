@@ -19,7 +19,10 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://stocks-navigators.vercel.app",
-      "https://admin-stocks-navigators.com",
+      "https://stocksnavigators.com",
+      "https://www.stocksnavigators.com",
+      "https://app.stocksnavigators.com",
+      "https://admin.stocksnavigators.com",
       "https://admin-stocks-navigators.vercel.app",
     ],
     credentials: true,
