@@ -16,7 +16,12 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://stock-navigators.vercel.app"],
+    origin: [
+      "http://localhost:3000",
+      "https://stocks-navigators.vercel.app",
+      "https://admin-stocks-navigators.com",
+      "https://admin-stocks-navigators.vercel.app",
+    ],
     credentials: true,
   })
 );
