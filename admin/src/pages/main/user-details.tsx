@@ -35,15 +35,16 @@ export default function UserDetails() {
     updateUserBalance,
     updateUserBonus,
     removeUserAdmin,
-
     isLoading,
   } = useUsers();
   const { trades } = useTrades();
   const { transactions } = useTransactions();
 
+
+
   const user = users?.find((u) => u.id === id);
-  const userTrades = trades?.filter((t) => t.user.id === id);
-  const userTransactions = transactions?.filter((t) => t.user.id === id);
+  const userTrades = trades?.filter((t) => t.user?.id === (id as string));
+  const userTransactions = transactions?.filter((t) => t.user?.id === (id as string));
 
   const [newBalance, setNewBalance] = useState(user?.availableBalance || 0);
   const [newBonus, setNewBonus] = useState(user?.bonus || 0);
