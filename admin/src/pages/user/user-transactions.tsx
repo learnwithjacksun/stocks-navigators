@@ -7,9 +7,9 @@ import { useParams } from "react-router-dom";
 export default function UserTransactions() {
   const {id} = useParams();
   const {users} = useUsers();
-  const user = users?.find((user) => user.id === id);
+  const user = users?.find((user) => user?.id === id);
   const {transactions, isLoadingTransactions} = useTransactions();
-  const userTransactions = transactions?.filter((transaction) => transaction.user.id === id);
+  const userTransactions = transactions?.filter((transaction) => transaction.user?.id === id);
   return (
     <MainLayout title={`${user?.firstName}'s Transaction History`} subtitle="View and manage user transactions">
       <div className="mt-10 space-y-6">

@@ -7,9 +7,9 @@ import { Link, useParams } from "react-router-dom";
 export default function UserTrades() {
   const { id } = useParams();
   const { users } = useUsers();
-  const user = users?.find((user) => user.id === id);
+  const user = users?.find((user) => user?.id === id);
   const { trades, isLoadingTrades } = useTrades();
-  const userTrades = trades?.filter((trade) => trade.user.id === id);
+  const userTrades = trades?.filter((trade) => trade.user?.id === id);
   return (
     <MainLayout
       title={`${user?.firstName}'s Trades`}
