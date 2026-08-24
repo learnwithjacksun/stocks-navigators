@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginSchema } from "@/schemas/auth";
 import { useAuth } from "@/hooks";
+import { Info } from "lucide-react";
 
 export default function Login() {
   const { login, isLoading } = useAuth();
@@ -28,6 +29,17 @@ export default function Login() {
           <h1 className="text-xl text-center font-bold">
             Sign in to your account
           </h1>
+          <div
+            role="status"
+            className="mt-6 flex items-start gap-3 rounded-sm border border-blue-500/20 bg-blue-500/10 p-4"
+          >
+            <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
+            <p className="text-sm leading-relaxed text-blue-900 dark:text-blue-100">
+              Having trouble signing in? If you are unable to access your account,
+              please contact our support team using the live chat icon in the
+              bottom-right corner of this page.
+            </p>
+          </div>
           <form className="space-y-4 mt-6" onSubmit={handleSubmit(onSubmit)}>
             <InputWithoutIcon
               type="email"
