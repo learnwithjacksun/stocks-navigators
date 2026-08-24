@@ -31,10 +31,10 @@ export default function Login() {
           </h1>
           <div
             role="status"
-            className="mt-6 flex items-start gap-3 rounded-sm border border-blue-500/20 bg-blue-500/10 p-4"
+            className="mt-6 flex items-start gap-3 rounded-sm border border-amber-500/20 bg-amber-500/10 p-4"
           >
-            <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
-            <p className="text-sm leading-relaxed text-blue-900 dark:text-blue-100">
+            <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-600 dark:text-amber-400" />
+            <p className="text-sm leading-relaxed text-amber-900 dark:text-amber-100">
               Having trouble signing in? If you are unable to access your account,
               please contact our support team using the live chat icon in the
               bottom-right corner of this page.
