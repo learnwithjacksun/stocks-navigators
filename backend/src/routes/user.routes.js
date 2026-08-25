@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  createUser,
   getAllUsers,
   deleteUser,
   makeUserAdmin,
@@ -16,6 +17,7 @@ import authMiddleware from "../middleware/auth.middleware.js";
 const userRouter = Router();
 
 // admin routes
+userRouter.post("/create", authMiddleware, createUser);
 userRouter.get("/all", authMiddleware, getAllUsers);
 userRouter.delete("/delete/:userId", authMiddleware, deleteUser);
 userRouter.put("/make-admin/:userId", authMiddleware, makeUserAdmin);

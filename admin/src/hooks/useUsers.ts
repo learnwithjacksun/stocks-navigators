@@ -29,6 +29,40 @@ export default function useUsers() {
     }
   };
 
+  const createUser = async (data: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+    country?: string;
+    city?: string;
+    address?: string;
+    password?: string;
+    availableBalance?: number | string;
+    bonus?: number | string;
+    isActive?: boolean;
+    isAdmin?: boolean;
+    isVerified?: boolean;
+  }) => {
+    setIsLoading(true);
+    try {
+      const response = await api.post("/user/create", data);
+      if (response.data.success) {
+        toast.success(response.data.message);
+        queryClient.invalidateQueries({ queryKey: ["users"] });
+        return response.data.data;
+      } else {
+        toast.error(response.data.message);
+        return null;
+      }
+    } catch (error) {
+      onError(error as Error | AxiosError);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const makeUserAdmin = async (userId: string) => {
     setIsLoading(true);
     try {
@@ -233,6 +267,7 @@ export default function useUsers() {
   return {
     updateUserProfile,
     changeUserPassword,
+    createUser,
 
     makeUserAdmin,
     activateUser,

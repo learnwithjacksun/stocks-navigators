@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useUsers } from "@/hooks";
 import { MainLayout } from "@/layouts";
-import { UserCard } from "@/components/ui";
+import { UserCard, AddUserModal } from "@/components/ui";
+import type { CreateUserData } from "@/components/ui/AddUserModal";
 import {
   Search,
   Filter,
@@ -9,10 +10,11 @@ import {
   Crown,
   UsersRound,
   XCircle,
+  Plus,
 } from "lucide-react";
 
 export default function Users() {
-  const { users: usersData, isLoadingUsers } = useUsers();
+  const { users: usersData, isLoadingUsers, createUser, isLoading } = useUsers();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
@@ -21,6 +23,7 @@ export default function Users() {
   const [adminFilter, setAdminFilter] = useState<"all" | "admin" | "user">(
     "all"
   );
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filteredUsers = usersData?.filter((user) => {
     const searchMatch =
@@ -48,6 +51,25 @@ export default function Users() {
   const activeUsers = usersData?.filter((u) => u.isActive).length ?? 0;
   const inactiveUsers = usersData?.filter((u) => !u.isActive).length ?? 0;
   const adminUsers = usersData?.filter((u) => u.isAdmin).length ?? 0;
+
+  const handleCreateUser = async (data: CreateUserData) => {
+    const result = await createUser({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      phone: data.phone,
+      country: data.country,
+      city: data.city,
+      address: data.address,
+      password: data.password,
+      availableBalance: data.availableBalance,
+      bonus: data.bonus,
+      isActive: data.isActive,
+      isAdmin: data.isAdmin,
+      isVerified: data.isVerified,
+    });
+    return !!result;
+  };
 
   return (
     <MainLayout
@@ -154,7 +176,7 @@ export default function Users() {
               </div>
             </div>
 
-            {/* Filters */}
+            {/* Filters + Add User */}
             <div className="flex md:items-center flex-wrap gap-3">
               {/* Status Filter */}
               <select
@@ -181,6 +203,14 @@ export default function Users() {
                 <option value="admin">Admins</option>
                 <option value="user">Regular Users</option>
               </select>
+
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="px-4 py-2 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center space-x-2"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add User</span>
+              </button>
             </div>
           </div>
         </div>
@@ -243,23 +273,39 @@ export default function Users() {
                   No users found
                 </h3>
                 <p className="text-gray-500 dark:text-gray-400 mb-4">
-                  Try adjusting your search or filters
+                  Try adjusting your search or filters, or add a new user
                 </p>
-                <button
-                  onClick={() => {
-                    setSearchTerm("");
-                    setStatusFilter("all");
-                    setAdminFilter("all");
-                  }}
-                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                >
-                  Clear Filters
-                </button>
+                <div className="flex items-center justify-center gap-3">
+                  <button
+                    onClick={() => {
+                      setSearchTerm("");
+                      setStatusFilter("all");
+                      setAdminFilter("all");
+                    }}
+                    className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    Clear Filters
+                  </button>
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors flex items-center gap-2"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add User
+                  </button>
+                </div>
               </div>
             )}
           </>
         )}
       </div>
+
+      <AddUserModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleCreateUser}
+        isLoading={isLoading}
+      />
     </MainLayout>
   );
 }
