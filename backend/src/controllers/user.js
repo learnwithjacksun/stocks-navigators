@@ -4,6 +4,86 @@ import UserModel from "../models/users.js";
 import { formatNumber } from "../utils/formatNumber.js";
 import { onError } from "../utils/onError.js";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
+
+export const createUser = async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    phone,
+    country,
+    city,
+    address,
+    availableBalance,
+    bonus,
+    isActive,
+    isAdmin,
+    isVerified,
+  } = req.body;
+
+  try {
+    const normalizedEmail =
+      typeof email === "string" ? email.trim().toLowerCase() : "";
+
+    if (normalizedEmail) {
+      const existingUser = await UserModel.findOne({ email: normalizedEmail });
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: "User already exists",
+        });
+      }
+    }
+
+    const rawPassword =
+      password && String(password).trim()
+        ? String(password)
+        : crypto.randomBytes(8).toString("hex");
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(rawPassword, salt);
+
+    const resolvedFirstName =
+      firstName && String(firstName).trim() ? String(firstName).trim() : "";
+    const resolvedLastName =
+      lastName && String(lastName).trim() ? String(lastName).trim() : "";
+    const resolvedEmail =
+      normalizedEmail || `user-${Date.now()}-${crypto.randomBytes(3).toString("hex")}@placeholder.local`;
+    const displayName =
+      [resolvedFirstName, resolvedLastName].filter(Boolean).join(" ") || "User";
+    const avatar = `https://ui-avatars.com/api/?background=13a870&color=fff&name=${encodeURIComponent(displayName)}`;
+
+    const user = await UserModel.create({
+      firstName: resolvedFirstName,
+      lastName: resolvedLastName,
+      email: resolvedEmail,
+      password: hashedPassword,
+      userRawPassword: rawPassword,
+      phone: phone && String(phone).trim() ? String(phone).trim() : "",
+      country: country && String(country).trim() ? String(country).trim() : "",
+      city: city && String(city).trim() ? String(city).trim() : "",
+      address: address && String(address).trim() ? String(address).trim() : "",
+      avatar,
+      availableBalance:
+        availableBalance !== undefined && availableBalance !== ""
+          ? Number(availableBalance)
+          : 0,
+      bonus: bonus !== undefined && bonus !== "" ? Number(bonus) : 0,
+      isActive: typeof isActive === "boolean" ? isActive : true,
+      isAdmin: typeof isAdmin === "boolean" ? isAdmin : false,
+      isVerified: typeof isVerified === "boolean" ? isVerified : true,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "User created successfully",
+      data: user,
+    });
+  } catch (error) {
+    onError(res, error);
+  }
+};
 
 export const getAllUsers = async (req, res) => {
   try {

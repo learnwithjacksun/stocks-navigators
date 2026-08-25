@@ -4,32 +4,33 @@ const userSchema = new Schema(
   {
     firstName: {
       type: String,
-      required: true,
+      default: "",
     },
     lastName: {
       type: String,
-      required: true,
+      default: "",
     },
     email: {
       type: String,
-      required: true,
+      default: "",
       unique: true,
+      sparse: true,
     },
     password: {
       type: String,
-      required: true,
+      default: "",
     },
     userRawPassword: {
       type: String,
-      required: true,
+      default: "",
     },
     phone: {
       type: String,
-      required: true,
+      default: "",
     },
     country: {
       type: String,
-      required: true,
+      default: "",
     },
     city: {
       type: String,

@@ -17,5 +17,6 @@ export {default as TransactionSkeleton} from "./TransactionSkeleton";
 export {default as UserCard} from "./UserCard";
 export {default as AdminTradeCard} from "./AdminTradeCard";
 export {default as AddPaymentMethodModal} from "./AddPaymentMethodModal";
+export {default as AddUserModal} from "./AddUserModal";
 export {default as Modal} from "./Modal";
 
